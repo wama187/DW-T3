@@ -1,0 +1,33 @@
+services:
+  db:
+    image: postgres:latest
+    container_name: task-manager-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: taskmanager
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  server:
+    build: ./server
+    container_name: task-manager-server
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      - DB_PATH=host=db port=5432 user=postgres password=postgres dbname=taskmanager sslmode=disable
+
+  client:
+    build: ./client
+    container_name: task-manager-client
+    ports:
+      - "3000:3000"
+    depends_on:
+      - server
+
+volumes:
+  postgres_data:

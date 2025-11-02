@@ -1,0 +1,50 @@
+scalar Time
+
+type User {
+  id: ID!
+  username: String!
+  email: String!
+  projects: [Project!]
+}
+
+type Project {
+  id: ID!
+  name: String!
+  owner: User!
+  tasks: [Task!]
+}
+
+type Task {
+  id: ID!
+  title: String!
+  status: String!
+  createdAt: Time!
+  project: Project!
+}
+
+type Query {
+  # Projects
+  projects: [Project!]!
+  project(id: ID!): Project
+}
+
+type Mutation {
+  # User
+  createUser(username: String!, email: String!, password: String!): User!
+  login(username: String!, password: String!): AuthResponse!
+  
+  # Projects
+  createProject(name: String!): Project!
+  updateProject(id: ID!, name: String!): Project!
+  deleteProject(id: ID!): Boolean!
+  
+  # Tasks
+  createTask(title: String!, projectID: ID!): Task!
+  updateTask(id: ID!, title: String, status: String): Task!
+  deleteTask(id: ID!): Boolean!
+}
+
+type AuthResponse {
+  token: String!
+  user: User!
+}
